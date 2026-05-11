@@ -9,7 +9,7 @@ self.onmessage = (e: MessageEvent) => {
 
     try {
         // 1. Setup Noise
-        const noise2D = createNoise2D(mulberry32(config.seed * 1e9));
+        const noise2D = createNoise2D(mulberry32(config.seed));
 
         // 2. Generate Height Map
         const cols = Math.ceil(width / GRID_SIZE) + 1;
