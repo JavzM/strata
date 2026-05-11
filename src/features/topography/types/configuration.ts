@@ -18,7 +18,7 @@ export const DEFAULT_CONFIG: Configuration = {
     step: 0.1,
     roughness: 0.5,
     lineWidth: 1,
-    seed: Math.random(),
+    seed: Math.floor(Math.random() * 1e9),
     octaves: 4,
     bgColor: "#0e0e11",
     strokeColor: "#ffffff",

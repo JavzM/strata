@@ -8,6 +8,8 @@ import type {Configuration} from "@/features/topography/types/configuration.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Dices} from "lucide-react";
 import {Spinner} from "@/components/ui/spinner.tsx";
+import {FieldInput} from "@/components/fields/field-input.tsx";
+import {useState} from "react";
 
 interface Props {
     config: Configuration;
@@ -27,6 +29,23 @@ const TopographyControls = (
     }: Props) => {
     const updateConfig = (key: keyof Configuration, value: any) => {
         onConfigChange({...config, [key]: value});
+    };
+
+    const [seedDraft, setSeedDraft] = useState(String(config.seed));
+    const [prevSeed, setPrevSeed] = useState(config.seed);
+
+    if (config.seed !== prevSeed) {
+        setPrevSeed(config.seed);
+        setSeedDraft(String(config.seed));
+    }
+
+    const commitSeed = () => {
+        const parsed = parseInt(seedDraft, 10);
+        if (!isNaN(parsed)) {
+            updateConfig('seed', parsed);
+        } else {
+            setSeedDraft(String(config.seed));
+        }
     };
 
     return (
@@ -77,7 +96,7 @@ const TopographyControls = (
                         defaultValue={"#000000"}
                     />
                     <FieldSeparator/>
-                    <div className={"flex flex-col gap-10"}>
+                    <div className={"flex flex-col gap-8"}>
 
                         <FieldSlider
                             label={"Scale"}
@@ -130,6 +149,17 @@ const TopographyControls = (
                             onChange={(e) => updateConfig('lineWidth', Number(e.target.value))}
                         />
                     </div>
+                    <FieldSeparator/>
+                    <FieldInput
+                        label={"Seed"}
+                        tooltip={"Deterministic seed for terrain generation. The same seed always produces the same result."}
+                        value={seedDraft}
+                        onChange={(e) => setSeedDraft(e.target.value)}
+                        onBlur={commitSeed}
+                        onKeyDown={(e) => e.key === 'Enter' && commitSeed()}
+                        placeholder={"e.g. 372847561"}
+                    />
+
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>
