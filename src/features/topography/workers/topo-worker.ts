@@ -5,7 +5,7 @@ import {inverseLerp} from "../utils/marchingSquares.ts";
 const GRID_SIZE = 4;
 
 self.onmessage = (e: MessageEvent) => {
-    const {config, width, height} = e.data;
+    const {config, width, height, id} = e.data;
 
     try {
         // 1. Setup Noise
@@ -134,10 +134,10 @@ self.onmessage = (e: MessageEvent) => {
             }
         }
 
-        self.postMessage({paths});
+        self.postMessage({paths, id});
 
     } catch (error) {
         console.error("Worker error:", error);
-        self.postMessage({error: "Generation failed"});
+        self.postMessage({error: "Generation failed", id});
     }
 };
