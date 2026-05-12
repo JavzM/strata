@@ -1,6 +1,8 @@
 import {SidebarTrigger} from "@/components/ui/sidebar.tsx";
 import ThemeToggle from "@/components/theme-toggle.tsx";
 import {Separator} from "@/components/ui/separator"
+import {Button} from "@/components/ui/button.tsx";
+import {Github} from "lucide-react";
 
 const Navbar = () => {
 
@@ -15,6 +17,16 @@ const Navbar = () => {
                 />
                 <h1 className="text-base font-medium">Generate a topographic wallpaper</h1>
                 <div className="ml-auto flex items-center gap-2">
+                    <a
+                        href="https://github.com/JavzM/strata"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="GitHub repository"
+                    >
+                        <Button variant="ghost" size="icon">
+                            <Github className="size-4"/>
+                        </Button>
+                    </a>
                     <ThemeToggle/>
                 </div>
             </div>
