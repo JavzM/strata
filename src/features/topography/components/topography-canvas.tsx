@@ -8,12 +8,15 @@ type Path = { level: number; segments: number[] };
 interface Props {
     config: Configuration;
     onGeneratingChange?: (isGenerating: boolean) => void;
+    maxDisplayWidth?: number;
+    maxDisplayHeight?: number;
+    canvasId?: string;
 }
 
 const MAX_PREVIEW_WIDTH = 900;
 const MAX_PREVIEW_HEIGHT = 700;
 
-const TopographyCanvas = ({config, onGeneratingChange}: Props) => {
+const TopographyCanvas = ({config, onGeneratingChange, maxDisplayWidth, maxDisplayHeight, canvasId = "topo-canvas"}: Props) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const workerRef = useRef<Worker | null>(null);
     const lastPathsRef = useRef<Path[] | null>(null);
@@ -43,13 +46,16 @@ const TopographyCanvas = ({config, onGeneratingChange}: Props) => {
             canvas.height = targetHeight;
         }
 
-        const aspectRatio = config.resolution.width / config.resolution.height;
-        let displayWidth = MAX_PREVIEW_WIDTH;
-        let displayHeight = MAX_PREVIEW_WIDTH / aspectRatio;
+        const maxW = maxDisplayWidth ?? MAX_PREVIEW_WIDTH;
+        const maxH = maxDisplayHeight ?? MAX_PREVIEW_HEIGHT;
 
-        if (displayHeight > MAX_PREVIEW_HEIGHT) {
-            displayHeight = MAX_PREVIEW_HEIGHT;
-            displayWidth = MAX_PREVIEW_HEIGHT * aspectRatio;
+        const aspectRatio = config.resolution.width / config.resolution.height;
+        let displayWidth = maxW;
+        let displayHeight = maxW / aspectRatio;
+
+        if (displayHeight > maxH) {
+            displayHeight = maxH;
+            displayWidth = maxH * aspectRatio;
         }
 
         canvas.style.width = `${displayWidth}px`;
@@ -74,7 +80,7 @@ const TopographyCanvas = ({config, onGeneratingChange}: Props) => {
             }
             ctx.stroke();
         });
-    }, [config.bgColor, config.strokeColor, config.lineWidth, config.resolution]);
+    }, [config.bgColor, config.strokeColor, config.lineWidth, config.resolution, maxDisplayWidth, maxDisplayHeight]);
 
     // Keep drawRef in sync so the worker handler always calls the latest drawPaths
     useEffect(() => {
@@ -145,7 +151,7 @@ const TopographyCanvas = ({config, onGeneratingChange}: Props) => {
             <canvas
                 className={"border rounded-2xl"}
                 ref={canvasRef}
-                id="topo-canvas"
+                id={canvasId}
                 style={{opacity: showSpinner ? 0.5 : 1, transition: 'opacity 0.3s'}}
             />
             {showSpinner && (
